@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         var cook= Cook()
         val button=findViewById<Button>(R.id.button)
         button.setOnClickListener(){
-
+            listData.clear()
             listData=cook.dischargeCal(applicationContext)
             counter=cook.countsCal(applicationContext)
             ll.removeAllViews()

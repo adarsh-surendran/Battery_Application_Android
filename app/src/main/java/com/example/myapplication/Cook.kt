@@ -28,12 +28,25 @@ class Cook {
         while (true){
             val dateTime = LocalDateTime.parse(startDate,formatter)
             var strday=dateTime.dayOfMonth.toString()
+            var strmonth=dateTime.monthValue.toString()
+            var strhour=dateTime.hour.toString()
             if(strday.length==1){
                 strday= "0$strday"
             }
-            startDate=""+dateTime.year+"-"+dateTime.monthValue+"-"+strday+" "+dateTime.hour+":00:00"
-            var endDate=""+dateTime.year+"-"+dateTime.monthValue+"-"+strday+" "+dateTime.hour.plus(1)+":00:00"
-            val hourlyData=db.batteryUsageDao().getHourly(startDate,endDate)
+            if(strmonth.length==1){
+                strmonth= "0$strmonth"
+            }
+            if(strhour.length==1){
+                strhour= "0$strhour"
+            }
+            var strhour2=(strhour.toInt()+1).toString()
+            if(strhour2.length==1){
+                strhour2= "0$strhour2"
+            }
+
+            startDate=""+dateTime.year+"-"+strmonth+"-"+strday+" "+strhour+":00:00"
+            var endDate=""+dateTime.year+"-"+strmonth+"-"+strday+" "+strhour2+":00:00"
+            val hourlyData:List<BatteryUsage> =db.batteryUsageDao().getHourly(startDate,endDate)
             if (hourlyData.count()>0){
                 var initialCharge=charge
                 var initialTime=LocalDateTime.parse(tempstartDate,formatter)
@@ -55,6 +68,7 @@ class Cook {
                         initialTime=finalTime
                     }
                     initialCharge=finalCharge
+                    i++
                 }
                 val list=DischargeDetails(startDate,dischargeLevel, dischargeTime)
                 listData.add(list)
