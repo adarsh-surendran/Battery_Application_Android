@@ -1,9 +1,15 @@
 package com.example.myapplication
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
+import android.icu.text.ListFormatter
 import android.os.Build
 import android.os.Bundle
+import android.transition.Visibility
 import android.util.Log
+import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -29,37 +35,55 @@ class MainActivity : AppCompatActivity() {
         val badCount=findViewById<TextView>(R.id.BadCount)
         val optimalCount=findViewById<TextView>(R.id.OptimalCount)
         val spotCount=findViewById<TextView>(R.id.SpotCount)
-        val ll=findViewById<TableLayout>(R.id.table)
+        val header=findViewById<TableRow>(R.id.header)
+        val tl=findViewById<TableLayout>(R.id.table)
+
         var cook= Cook()
         val button=findViewById<Button>(R.id.button)
         button.setOnClickListener(){
             listData.clear()
+            tl.removeAllViews()
             listData=cook.dischargeCal(applicationContext)
             counter=cook.countsCal(applicationContext)
-            ll.removeAllViews()
+            header.visibility=View.VISIBLE
+            optimalCount.visibility=View.VISIBLE
+            spotCount.visibility=View.VISIBLE
+            badCount.visibility=View.VISIBLE
+
             button.text="Refresh"
 
 
             badCount.setText("Bad Count : " + counter.BadCount.toString())
             optimalCount.setText("Optimal Count : " +counter.OptimalCount.toString())
             spotCount.setText("Spot Count : " +counter.SpotCount.toString())
-            var count=0
+
             for (ls in listData) {
-                val row = TableRow(this)
-                val lp: TableRow.LayoutParams =
-                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
-                row.layoutParams = lp
-                var date_time_ = TextView(this)
-                var discharge_ = TextView(this)
-                var time_ = TextView(this)
-                date_time_.setText(ls.date_time+"     ")
-                discharge_.setText(ls.discharge_amount.toString()+"              ")
-                time_.setText(ls.discharge_time.toString())
-                row.addView(date_time_)
-                row.addView(discharge_)
-                row.addView(time_)
-                ll.addView(row, count)
-                count++
+                val newRow=TableRow(this)
+                val newText1=TextView(this)
+                val newText2=TextView(this)
+                val newText3=TextView(this)
+
+                newText1.setText(ls.date_time)
+                newText1.width=400
+                newText1.setTypeface(null,Typeface.BOLD)
+                newText1.setTextColor(Color.DKGRAY)
+                newText1.gravity=Gravity.CENTER_HORIZONTAL
+                newRow.addView(newText1)
+                newText2.setText(ls.discharge_amount.toString())
+                newText2.width=300
+                newText2.setTypeface(null,Typeface.BOLD)
+                newText2.setTextColor(Color.DKGRAY)
+                newText2.gravity=Gravity.CENTER_HORIZONTAL
+                newRow.addView(newText2)
+                newText3.setText(ls.discharge_time.toString())
+                newText3.width=350
+                newText3.setTypeface(null,Typeface.BOLD)
+                newText3.setTextColor(Color.DKGRAY)
+                newText3.gravity=Gravity.CENTER_HORIZONTAL
+                newRow.addView(newText3)
+
+                tl.addView(newRow)
+
             }
         }
     }
